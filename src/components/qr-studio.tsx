@@ -87,7 +87,7 @@ export default function QRStudio() {
 
   function selectPurpose(next: Purpose) { setPurpose(next); setDetails({}); setStatus(""); }
   function handleLogo(event: React.ChangeEvent<HTMLInputElement>) { const file = event.target.files?.[0]; if (!file) return; if (!file.type.startsWith("image/") || file.size > 512 * 1024) { setStatus("Choose an image under 512 KB."); return; } const reader = new FileReader(); reader.onload = () => setLogo(String(reader.result)); reader.readAsDataURL(file); }
-  function download(extension: "png" | "svg") { if (qrRef.current) qrRef.current.download({ name: "emmortal-qr", extension }); }
+  function download(extension: "png" | "svg") { if (qrRef.current) qrRef.current.download({ name: "emmortals-qr", extension }); }
 
   return (
     <section className="studio" aria-labelledby="studio-title">

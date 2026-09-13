@@ -1,4 +1,4 @@
-## Emmortal
+## Emmortals
 
 Privacy-first QR creation and public media tools built with Next.js 16, React 19, TypeScript, Tailwind CSS 4, and Motion.
 
@@ -32,4 +32,4 @@ npm run typecheck
 npm run test
 npm run build
 ```
-# Emmortal
+# Emmortals
