@@ -37,9 +37,11 @@ button, input, textarea, select { font: inherit; }
 .purpose-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; padding: 19px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); }
 .purpose-field { display: block; }
 .purpose-field:has(textarea) { grid-column: 1 / -1; }
-.purpose-field input, .purpose-fields textarea { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 0 13px; background: var(--surface); color: var(--ink); outline: none; }
+.purpose-field input, .purpose-field select, .purpose-fields textarea { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 0 13px; background: var(--surface); color: var(--ink); outline: none; }
+.purpose-field select { cursor: pointer; }
+.phone-input { display: grid; grid-template-columns: minmax(132px, .8fr) 1.2fr; gap: 8px; }
 .purpose-fields textarea { min-height: 106px; padding: 14px 15px; resize: vertical; }
-.purpose-field input:focus, .purpose-fields textarea:focus { border-color: black; box-shadow: 0 0 0 4px #00000014; }
+.purpose-field input:focus, .purpose-field select:focus, .purpose-fields textarea:focus { border-color: black; box-shadow: 0 0 0 4px #00000014; }
 .status { margin: 12px 0 0; color: #a33; font-size: 12px; }
 .customize-heading { margin-top: 22px; padding: 20px 17px 0; border-top: 1px solid var(--line); }
 .control-row { margin-top: 16px; }

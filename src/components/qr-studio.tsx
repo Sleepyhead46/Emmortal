@@ -19,6 +19,8 @@ const purposes: { id: Purpose; label: string; icon: Purpose }[] = [
   { id: "event", label: "Event / Calendar", icon: "event" },
 ];
 
+const countryCodes: [string, string][] = [["+1", "United States / Canada"], ["+44", "United Kingdom"], ["+61", "Australia"], ["+81", "Japan"], ["+91", "India"], ["+33", "France"], ["+49", "Germany"], ["+55", "Brazil"], ["+86", "China"], ["+971", "United Arab Emirates"]];
+
 function PurposeIcon({ type }: { type: Purpose }) {
   const paths: Record<Purpose, string> = {
     website: "M4 12h16M12 4a12 12 0 0 1 0 16M12 4a12 12 0 0 0 0 16M4.5 8h15M4.5 16h15",
@@ -38,6 +40,8 @@ function escapeValue(value: string) { return value.replace(/([\\;,:"])/g, "\\$1"
 function validEmail(value: string) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); }
 function validHttpUrl(value: string) { try { const url = new URL(value); return url.protocol === "http:" || url.protocol === "https:"; } catch { return false; } }
 function field(details: Details, name: string, label: string, type = "text", placeholder = "") { return <label className="purpose-field"><span className="field-label">{label}</span><input type={type} value={details[name] || ""} placeholder={placeholder} onChange={(event) => (details.onChange as unknown as ((fieldName: string, fieldValue: string) => void) | undefined)?.(name, event.target.value)} /></label>; }
+function selectField(details: Details, name: string, label: string, options: [string, string][]) { return <label className="purpose-field"><span className="field-label">{label}</span><select value={details[name] || options[0][0]} onChange={(event) => (details.onChange as unknown as ((fieldName: string, fieldValue: string) => void) | undefined)?.(name, event.target.value)}>{options.map(([value, optionLabel]) => <option value={value} key={value}>{optionLabel}</option>)}</select></label>; }
+function phoneField(details: Details, updateDetail: (name: string, value: string) => void, label = "Phone number") { return <div className="purpose-field phone-field"><span className="field-label">{label}</span><div className="phone-input"><select aria-label="Country code" value={details.countryCode || "+1"} onChange={(event) => updateDetail("countryCode", event.target.value)}>{countryCodes.map(([value, country]) => <option value={value} key={value}>{value} · {country}</option>)}</select><input aria-label={label} type="tel" value={details.phone || ""} placeholder="555 123 4567" onChange={(event) => updateDetail("phone", event.target.value)} /></div></div>; }
 
 export default function QRStudio() {
   const previewRef = useRef<HTMLDivElement>(null);
@@ -54,16 +58,17 @@ export default function QRStudio() {
 
   const updateDetail = (name: string, value: string) => { setDetails((current) => ({ ...current, [name]: value })); setStatus(""); };
   const formDetails = { ...details, onChange: updateDetail } as unknown as Details;
+  const fullPhone = details.phone ? `${details.countryCode || "+1"}${details.phone.replace(/^\+/, "")}` : "";
 
   let qrData = "";
   let validation = "";
   if (purpose === "website") { qrData = details.url || ""; if (details.url && !validHttpUrl(details.url)) validation = "Enter a valid HTTP or HTTPS URL."; }
   if (purpose === "text") qrData = details.text || "";
   if (purpose === "wifi") { qrData = `WIFI:T:${details.security || "WPA"};S:${escapeValue(details.ssid || "")};P:${escapeValue(details.password || "")};H:${details.hidden === "true" ? "true" : "false"};;`; if (details.ssid && !details.password) validation = "Enter the Wi-Fi password, or choose Open security."; }
-  if (purpose === "vcard") { qrData = `BEGIN:VCARD\nVERSION:3.0\nFN:${details.name || ""}\nTEL:${details.phone || ""}\nEMAIL:${details.email || ""}\nORG:${details.company || ""}\nEND:VCARD`; if (details.email && !validEmail(details.email)) validation = "Enter a valid email address."; }
-  if (purpose === "phone") { qrData = details.phone ? `tel:${details.phone}` : ""; }
+  if (purpose === "vcard") { qrData = `BEGIN:VCARD\nVERSION:3.0\nFN:${details.name || ""}\nTEL:${fullPhone}\nEMAIL:${details.email || ""}\nORG:${details.company || ""}\nEND:VCARD`; if (details.email && !validEmail(details.email)) validation = "Enter a valid email address."; }
+  if (purpose === "phone") { qrData = fullPhone ? `tel:${fullPhone}` : ""; }
   if (purpose === "email") { qrData = details.email ? `mailto:${details.email}?subject=${encodeURIComponent(details.subject || "")}&body=${encodeURIComponent(details.body || "")}` : ""; if (details.email && !validEmail(details.email)) validation = "Enter a valid email address."; }
-  if (purpose === "sms") { qrData = details.phone ? `SMSTO:${details.phone}:${details.message || ""}` : ""; }
+  if (purpose === "sms") { qrData = fullPhone ? `SMSTO:${fullPhone}:${details.message || ""}` : ""; }
   if (purpose === "location") { qrData = details.latitude && details.longitude ? `geo:${details.latitude},${details.longitude}` : ""; if ((details.latitude && Number.isNaN(Number(details.latitude))) || (details.longitude && Number.isNaN(Number(details.longitude)))) validation = "Latitude and longitude must be numbers."; }
   if (purpose === "event") { qrData = details.title ? `BEGIN:VEVENT\nSUMMARY:${details.title}\nDTSTART:${(details.start || "").replaceAll("-", "").replaceAll(":", "")}\nDTEND:${(details.end || "").replaceAll("-", "").replaceAll(":", "")}\nLOCATION:${details.eventLocation || ""}\nEND:VEVENT` : ""; if (details.start && details.end && details.end <= details.start) validation = "The event end must be after the start."; }
 
@@ -99,11 +104,11 @@ export default function QRStudio() {
           <div className="purpose-fields">
             {purpose === "website" && field(formDetails, "url", "Website URL", "url", "https://example.com")}
             {purpose === "text" && <label className="purpose-field"><span className="field-label">Your text</span><textarea value={details.text || ""} onChange={(event) => updateDetail("text", event.target.value.slice(0, 2048))} rows={4} maxLength={2048} placeholder="Write anything..." /></label>}
-            {purpose === "wifi" && <>{field(formDetails, "ssid", "Network name", "text", "My Wi-Fi")}{field(formDetails, "password", "Password", "password", "Password")}{field(formDetails, "security", "Security", "text", "WPA")}</>}
-            {purpose === "vcard" && <>{field(formDetails, "name", "Full name", "text", "Ada Lovelace")}{field(formDetails, "phone", "Phone", "tel")}{field(formDetails, "email", "Email", "email")}{field(formDetails, "company", "Company", "text")}</>}
-            {purpose === "phone" && field(formDetails, "phone", "Phone number", "tel", "+1 555 123 4567")}
+            {purpose === "wifi" && <>{field(formDetails, "ssid", "Network name", "text", "My Wi-Fi")}{field(formDetails, "password", "Password", "password", "Password")}{selectField(formDetails, "security", "Security", [["WPA", "WPA / WPA2 / WPA3"], ["WEP", "WEP"], ["nopass", "Open network"]])}</>}
+            {purpose === "vcard" && <>{field(formDetails, "name", "Full name", "text", "Ada Lovelace")}{phoneField(details, updateDetail)}{field(formDetails, "email", "Email", "email")}{field(formDetails, "company", "Company", "text")}</>}
+            {purpose === "phone" && phoneField(details, updateDetail)}
             {purpose === "email" && <>{field(formDetails, "email", "To", "email", "hello@example.com")}{field(formDetails, "subject", "Subject")}{field(formDetails, "body", "Message", "text", "Your message")}</>}
-            {purpose === "sms" && <>{field(formDetails, "phone", "Phone number", "tel", "+1 555 123 4567")}{field(formDetails, "message", "Message", "text", "Your message")}</>}
+            {purpose === "sms" && <>{phoneField(details, updateDetail)}{field(formDetails, "message", "Message", "text", "Your message")}</>}
             {purpose === "location" && <>{field(formDetails, "latitude", "Latitude", "text", "40.7128")}{field(formDetails, "longitude", "Longitude", "text", "-74.0060")}</>}
             {purpose === "event" && <>{field(formDetails, "title", "Event title", "text", "Team meetup")}{field(formDetails, "start", "Starts", "datetime-local")}{field(formDetails, "end", "Ends", "datetime-local")}{field(formDetails, "eventLocation", "Location", "text", "Venue or address")}</>}
           </div>
