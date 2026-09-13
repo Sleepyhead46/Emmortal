@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 export const metadata: Metadata = {
   title: { default: "Emmortals | Simple tools. Powerful results.", template: "%s | Emmortals" },
   description: "Privacy-first tools for QR creation and public media downloads.",
+  icons: { icon: "/logo.svg" },
   openGraph: { title: "Emmortals", description: "Simple tools. Powerful results.", type: "website" },
 };
 
