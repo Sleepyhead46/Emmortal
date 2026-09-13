@@ -8,7 +8,7 @@ export function SiteNav() {
   const [open, setOpen] = useState(false);
   const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const { resolvedTheme, setTheme } = useTheme();
-  const links = [["Home", "/"], ["About", "/about"], ["QR Generator", "/qr"], ["AnyDownload", "/anydownload"]];
+  const links = [["Home", "/"], ["QR Generator", "/qr"], ["AnyDownload", "/anydownload"], ["About", "/about"]];
   return <header className="sticky top-0 z-50 border-b border-neutral-200/80 bg-[#fafafa]/90 text-neutral-700 backdrop-blur-xl dark:border-neutral-800/80 dark:bg-[#101010]/90 dark:text-neutral-300">
     <nav className="container flex h-16 items-center justify-between" aria-label="Main navigation">
       <Link href="/" className="font-bold tracking-[-0.04em] text-lg">Emmortals</Link>

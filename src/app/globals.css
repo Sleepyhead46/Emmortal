@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root { --ink: #101010; --muted: #707070; --line: #e5e5e5; --paper: #fafafa; }
+:root { --ink: #101010; --muted: #707070; --line: #e5e5e5; --paper: #fafafa; --surface: #ffffff; --surface-muted: #f3f3f3; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; }
@@ -11,10 +11,13 @@ button, input, textarea, select { font: inherit; }
 .fade-up { animation: fade-up .65s ease both; }
 @keyframes fade-up { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
-.dark body { background: #101010; color: #f5f5f5; }
+.dark body { --ink: #f5f5f5; --muted: #a3a3a3; --line: #333333; --paper: #101010; --surface: #181818; --surface-muted: #242424; background: #101010; color: #f5f5f5; }
 .dark .bg-\[\#fafafa\] { background: #101010; }
 .dark .bg-white { background: #181818; }
 .dark .text-neutral-400, .dark .text-neutral-500, .dark .text-neutral-600 { color: #a3a3a3; }
+.dark .purpose-option.selected, .dark .segmented button.selected, .dark .export-row button:first-child:not(:disabled) { border-color: #f5f5f5; color: #101010; background: #f5f5f5; }
+.dark .purpose-icon { background: var(--surface-muted); }
+.dark .qr-preview { border-color: var(--surface); }
 
 .studio { padding: 32px 0 64px; }
 .intro { max-width: 760px; }
@@ -26,20 +29,20 @@ button, input, textarea, select { font: inherit; }
 .preview-column { display: flex; flex-direction: column; align-items: center; }
 .field-label { display: block; margin-bottom: 10px; color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
 .purpose-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 19px; }
-.purpose-option { display: flex; min-height: 52px; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 11px; color: var(--muted); background: white; text-align: left; font-size: 11px; font-weight: 650; }
+.purpose-option { display: flex; min-height: 52px; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 11px; color: var(--muted); background: var(--surface); text-align: left; font-size: 11px; font-weight: 650; }
 .purpose-option.selected { border-color: black; color: white; background: black; }
 .purpose-icon { display: grid; width: 25px; height: 25px; flex: 0 0 25px; place-items: center; border: 1px solid var(--line); border-radius: 7px; background: #f0f0f0; }
 .purpose-icon svg { width: 14px; height: 14px; }
-.purpose-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; padding: 19px; border: 1px solid var(--line); border-radius: 15px; background: white; }
+.purpose-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; padding: 19px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface); }
 .purpose-field { display: block; }
 .purpose-field:has(textarea) { grid-column: 1 / -1; }
-.purpose-field input, .purpose-fields textarea { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 0 13px; background: white; color: var(--ink); outline: none; }
+.purpose-field input, .purpose-fields textarea { width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; padding: 0 13px; background: var(--surface); color: var(--ink); outline: none; }
 .purpose-fields textarea { min-height: 106px; padding: 14px 15px; resize: vertical; }
 .purpose-field input:focus, .purpose-fields textarea:focus { border-color: black; box-shadow: 0 0 0 4px #00000014; }
 .status { margin: 12px 0 0; color: #a33; font-size: 12px; }
 .customize-heading { margin-top: 22px; padding: 20px 17px 0; border-top: 1px solid var(--line); }
 .control-row { margin-top: 16px; }
-.segmented, .export-row { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: white; }
+.segmented, .export-row { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
 .segmented button, .export-row button { min-height: 36px; padding: 0 15px; border: 0; border-radius: 6px; color: var(--muted); background: transparent; font-size: 11px; font-weight: 650; }
 .segmented button.selected, .export-row button:first-child:not(:disabled) { color: white; background: black; }
 .color-row { display: flex; gap: 30px; margin: 18px 0 21px; }
@@ -52,7 +55,7 @@ button, input, textarea, select { font: inherit; }
 .gradient-toggle input:checked + .toggle-track span { transform: translateX(12px); }
 .gradient-toggle strong, .gradient-toggle small { display: block; }.gradient-toggle small { margin-top: 3px; color: var(--muted); font-size: 11px; }
 .upload { display: block; position: relative; margin-bottom: 20px; }.upload-button { display: inline-flex; min-height: 40px; align-items: center; padding: 0 13px; border: 1px dashed var(--line); border-radius: 8px; color: var(--muted); font-size: 11px; }
-.preview-card { position: relative; display: grid; width: min(100%, 410px); aspect-ratio: 1; place-items: center; border: 1px solid var(--line); border-radius: 26px; background: white; box-shadow: 0 24px 70px #1014111c; }
+.preview-card { position: relative; display: grid; width: min(100%, 410px); aspect-ratio: 1; place-items: center; border: 1px solid var(--line); border-radius: 26px; background: var(--surface); box-shadow: 0 24px 70px #1014111c; }
 .preview-card.is-ready { border-color: #aaa; }.preview-card.has-error { border-color: #c67878; }
 .preview-meta { position: absolute; top: 17px; left: 19px; color: var(--muted); font-size: 10px; }.preview-dot { display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%; background: #aaa; }.preview-dot.ready { background: #5c9a6a; }.preview-dot.error { background: #bd6262; }
 .qr-preview { display: grid; width: min(78%, 340px); aspect-ratio: 1; place-items: center; overflow: hidden; border: 10px solid white; border-radius: 18px; }.qr-preview canvas, .qr-preview svg { display: block; max-width: 100%; height: auto; }
