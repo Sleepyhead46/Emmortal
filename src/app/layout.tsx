@@ -18,8 +18,8 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: ["QR generator", "privacy-first tools", "public media downloader", "YouTube downloader", "Instagram downloader", "TikTok downloader"],
     alternates: { canonical: "/" },
     icons: { icon: "/logo.svg" },
-    openGraph: { title: "Emmortals", description, type: "website", url: origin, siteName: "Emmortals", images: [{ url: "/logo.svg", width: 96, height: 96, alt: "Emmortals logo" }] },
-    twitter: { card: "summary", title: "Emmortals", description, images: ["/logo.svg"] },
+    openGraph: { title: "Emmortals", description, type: "website", url: origin, siteName: "Emmortals", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Emmortals - Simple tools. Powerful results." }] },
+    twitter: { card: "summary_large_image", title: "Emmortals", description, images: ["/opengraph-image"] },
     robots: { index: true, follow: true },
   };
 }
