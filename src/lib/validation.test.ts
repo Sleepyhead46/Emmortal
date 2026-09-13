@@ -1,0 +1,3 @@
+import { describe, expect, it } from "vitest";
+function isPublicUrl(value: string) { try { const url = new URL(value); return ["http:", "https:"].includes(url.protocol) && !["localhost", "127.0.0.1", "::1"].includes(url.hostname); } catch { return false; } }
+describe("public URL validation", () => { it("accepts https URLs", () => expect(isPublicUrl("https://example.com/video")).toBe(true)); it("rejects local targets", () => expect(isPublicUrl("http://localhost:3000")).toBe(false)); it("rejects malformed values", () => expect(isPublicUrl("not a url")).toBe(false)); });
